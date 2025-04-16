@@ -40,8 +40,8 @@ jobs:
       - name: 🧪 Run container to verify image
         run: |
           docker run -d -p 8080:80 --name micro1-front-container $DOCKER_IMAGE:latest
-          sleep 10  # Laisse le temps au container de démarrer
-          curl -I http://localhost:8080  # Vérifie que le container répond
+          sleep 20  # Laisse le temps au container de démarrer
+          curl http://localhost:8080  # Vérifie que le container répond
 
       - name: 🧹 Cleanup container
         run: |
