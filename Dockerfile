@@ -1,32 +1,26 @@
-# Étape 1 : Build de l'application
-FROM node:20 AS build
+# Étape 1 : build de l'application React
+FROM node:20-alpine AS build
 
-# Dossier de travail
 WORKDIR /app
 
-# Copie les fichiers package.json et package-lock.json pour installer les dépendances
+# Copie les fichiers nécessaires
 COPY package*.json ./
-
-# Installe les dépendances
 RUN npm install
 
-# Copie tout le code source
 COPY . .
 
-# Build de l'application
+# Build de l'application React
 RUN npm run build
 
-# Étape 2 : Servir l'application avec Nginx
+# Étape 2 : Serveur Nginx pour servir les fichiers statiques
 FROM nginx:alpine
 
-# Supprime la config Nginx par défaut
-RUN rm -rf /usr/share/nginx/html/*
-
-# Copie les fichiers buildés depuis l'étape de build
+# Copie du build dans le dossier Nginx
 COPY --from=build /app/build /usr/share/nginx/html
 
-# Expose le port 80
+# Optionnel : copie de ta config Nginx personnalisée si besoin
+# COPY nginx.conf /etc/nginx/nginx.conf
+
 EXPOSE 80
 
-# Commande par défaut pour démarrer Nginx
 CMD ["nginx", "-g", "daemon off;"]
