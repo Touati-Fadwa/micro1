@@ -1,73 +1,61 @@
-# Welcome to your Lovable project
 
-## Project info
+# Bibliothèque ISET Tozeur - Système de Gestion
 
-**URL**: https://lovable.dev/projects/e6b95fc7-6fc2-4451-b204-7c6e384d3256
+Ce projet est une application de gestion de bibliothèque pour l'ISET Tozeur qui permet aux administrateurs de gérer les livres, les étudiants et les emprunts, et aux étudiants de consulter et emprunter des livres.
 
-## How can I edit this code?
+## Fonctionnalités
 
-There are several ways of editing your application.
+### Authentification
+- Page de connexion avec choix du rôle (Étudiant/Administrateur)
+- Authentification sécurisée
 
-**Use Lovable**
+### Tableau de bord administrateur
+- Vue d'ensemble du nombre de livres, d'emprunts et d'étudiants actifs
+- Liste des livres récents par département
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/e6b95fc7-6fc2-4451-b204-7c6e384d3256) and start prompting.
+### Gestion des livres
+- Liste complète des livres avec recherche
+- Ajout de nouveaux livres
+- Modification et suppression de livres
+- Informations détaillées (titre, auteur, catégorie, année, ISBN, disponibilité)
 
-Changes made via Lovable will be committed automatically to this repo.
+### Gestion des étudiants
+- Liste des étudiants avec recherche
+- Ajout de nouveaux étudiants
+- Suivi des emprunts par étudiant
 
-**Use your preferred IDE**
+### Gestion des emprunts
+- Suivi de tous les emprunts en cours
+- Gestion des retours
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Portail étudiant
+- Consultation des livres disponibles
+- Emprunt de livres
+- Suivi des emprunts personnels
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## Utilisation
 
-Follow these steps:
+### Connexion
+- Pour accéder en tant qu'administrateur:
+  - Email: admin@iset.tn
+  - Mot de passe: admin
+  - Rôle: Administrateur
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+- Pour accéder en tant qu'étudiant:
+  - Email: fadwatouati58@gmail.com
+  - Mot de passe: etudiant
+  - Rôle: Étudiant
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### Naviguer dans l'application
+L'application utilise une barre latérale pour la navigation entre les différentes fonctionnalités.
 
-# Step 3: Install the necessary dependencies.
-npm i
+## Développement
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
+Ce projet est développé avec:
 - React
-- shadcn-ui
+- TypeScript
 - Tailwind CSS
+- React Router
+- Context API pour la gestion de l'état
 
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/e6b95fc7-6fc2-4451-b204-7c6e384d3256) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+Note: Cette version de l'application est uniquement front-end, elle utilise des données statiques pour simuler un backend.
