@@ -1,37 +1,38 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
-import { UserRole } from '@/types';
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState<UserRole>('student');
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   
-  const { login } = useAuth();
+  const { login, isAuthenticated, loading, error, user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Rediriger si déjà connecté
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate(user?.role === 'admin' ? '/admin/dashboard' : '/student/dashboard');
+    }
+  }, [isAuthenticated, navigate, user]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError('');
     
     try {
-      const success = await login(email, password, role);
+      const success = await login(email, password);
       if (success) {
-        navigate(role === 'admin' ? '/admin/dashboard' : '/student/dashboard');
-      } else {
-        setError('Identifiants incorrects');
+        navigate(location.state?.from || (user?.role === 'admin' ? '/admin/dashboard' : '/student/dashboard'));
       }
     } catch (error) {
-      setError('Une erreur est survenue');
-    } finally {
-      setLoading(false);
+      console.error('Erreur de connexion', error);
     }
   };
 
@@ -48,21 +49,20 @@ export default function Login() {
         </div>
         
         {error && (
-          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md text-sm">
-            {error}
-          </div>
+          <Alert variant="destructive" className="mb-4">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
         )}
         
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <label htmlFor="email" className="block text-gray-700">Email</label>
-            <input
+            <Input
               id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="votreemail@iset.tn"
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-library-primary"
               required
             />
           </div>
@@ -70,14 +70,14 @@ export default function Login() {
           <div className="space-y-2">
             <label htmlFor="password" className="block text-gray-700">Mot de passe</label>
             <div className="relative">
-              <input
+              <Input
                 id="password"
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="********"
-                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-library-primary"
                 required
+                className="pr-10"
               />
               <button
                 type="button"
@@ -89,38 +89,13 @@ export default function Login() {
             </div>
           </div>
           
-          <div className="space-y-2">
-            <p className="block text-gray-700">Sélectionnez votre rôle</p>
-            <div className="flex items-center space-x-6">
-              <label className="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  checked={role === 'student'}
-                  onChange={() => setRole('student')}
-                  className="form-radio text-library-primary h-5 w-5"
-                />
-                <span>Étudiant</span>
-              </label>
-              
-              <label className="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  checked={role === 'admin'}
-                  onChange={() => setRole('admin')}
-                  className="form-radio text-library-primary h-5 w-5"
-                />
-                <span>Administrateur</span>
-              </label>
-            </div>
-          </div>
-          
-          <button
+          <Button
             type="submit"
             disabled={loading}
-            className="w-full py-3 bg-library-primary text-white rounded-md hover:bg-library-secondary focus:outline-none focus:ring-2 focus:ring-library-primary focus:ring-offset-2"
+            className="w-full"
           >
             {loading ? 'Connexion...' : 'Se connecter'}
-          </button>
+          </Button>
         </form>
       </div>
     </div>
