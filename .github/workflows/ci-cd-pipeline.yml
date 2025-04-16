@@ -1,0 +1,49 @@
+name: Frontend CI/CD
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-push-run:
+    runs-on: ubuntu-latest
+
+    env:
+      DOCKER_IMAGE: touatifadwa/micro1-front
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v3
+
+      - name: 🔧 Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: 📦 Install dependencies
+        run: npm install
+
+      - name: 🛠️ Build the app
+        run: npm run build
+
+      - name: 🧱 Build Docker image
+        run: docker build -t $DOCKER_IMAGE:latest .
+
+      - name: 🚀 Push Docker image
+        env:
+          DOCKER_USERNAME: touatifadwa
+          DOCKER_PASSWORD: foufou53550880
+        run: |
+          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+          docker push $DOCKER_IMAGE
+
+      - name: 🧪 Run container to verify image
+        run: |
+          docker run -d -p 8080:80 --name micro1-front-container $DOCKER_IMAGE:latest
+          sleep 10  # Laisse le temps au container de démarrer
+          curl -I http://localhost:8080  # Vérifie que le container répond
+
+      - name: 🧹 Cleanup container
+        run: |
+          docker stop micro1-front-container
+          docker rm micro1-front-container
