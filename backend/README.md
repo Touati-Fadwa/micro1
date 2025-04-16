@@ -1,12 +1,12 @@
 
-# Backend de l'Application de Gestion de Bibliothèque
+# Backend de l'Application de Gestion de Bibliothèque avec PostgreSQL
 
-Ce backend gère l'authentification et la base de données pour l'application de gestion de bibliothèque.
+Ce backend gère l'authentification et la base de données PostgreSQL pour l'application de gestion de bibliothèque.
 
 ## Configuration requise
 
 - Node.js (v14 ou supérieur)
-- MongoDB (local ou Atlas)
+- PostgreSQL (v12 ou supérieur)
 
 ## Installation
 
@@ -16,15 +16,23 @@ npm install
 ```
 
 2. Configurez les variables d'environnement :
-- Créez un fichier `.env` à la racine du projet
-- Ajoutez les variables suivantes :
+- Modifiez le fichier `.env` avec vos paramètres de connexion PostgreSQL:
 ```
-MONGODB_URI=mongodb://localhost:27017/bibliotheque
+DB_USER=votre_utilisateur_postgres
+DB_PASSWORD=votre_mot_de_passe
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=bibliotheque
 JWT_SECRET=votre_secret_jwt_super_securise
 PORT=5000
 ```
 
-3. Démarrez le serveur :
+3. Créez la base de données manuellement ou utilisez le script fourni :
+```
+psql -U postgres -f database_init.sql
+```
+
+4. Démarrez le serveur :
 ```
 npm run dev
 ```

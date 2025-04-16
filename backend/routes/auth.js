@@ -29,7 +29,7 @@ router.post('/login', async (req, res) => {
     const { email, password } = req.body;
     
     // Vérifier si l'utilisateur existe
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ where: { email } });
     if (!user) {
       return res.status(400).json({ message: 'Identifiants incorrects' });
     }
@@ -76,7 +76,9 @@ router.post('/login', async (req, res) => {
 // Route pour récupérer l'utilisateur connecté
 router.get('/me', authMiddleware, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select('-password');
+    const user = await User.findByPk(req.user.id, {
+      attributes: { exclude: ['password'] }
+    });
     res.json(user);
   } catch (error) {
     console.error(error.message);
@@ -88,7 +90,7 @@ router.get('/me', authMiddleware, async (req, res) => {
 router.post('/register', authMiddleware, async (req, res) => {
   try {
     // Vérifier si l'utilisateur est admin
-    const admin = await User.findById(req.user.id);
+    const admin = await User.findByPk(req.user.id);
     if (admin.role !== 'admin') {
       return res.status(403).json({ message: 'Accès refusé. Droit administrateur requis.' });
     }
@@ -96,27 +98,20 @@ router.post('/register', authMiddleware, async (req, res) => {
     const { name, email, password, department } = req.body;
     
     // Vérifier si l'étudiant existe déjà
-    let student = await User.findOne({ email });
+    let student = await User.findOne({ where: { email } });
     if (student) {
       return res.status(400).json({ message: 'Cet email est déjà utilisé' });
     }
     
     // Créer le nouvel étudiant
-    student = new User({
+    student = await User.create({
       name,
       email,
-      password,
+      password, // le hook beforeCreate s'occupera du hachage
       role: 'student',
       department: department || '',
       borrowedBooks: 0
     });
-    
-    // Hacher le mot de passe
-    const salt = await bcrypt.genSalt(10);
-    student.password = await bcrypt.hash(password, salt);
-    
-    // Enregistrer l'étudiant
-    await student.save();
     
     res.status(201).json({
       message: 'Étudiant ajouté avec succès',
